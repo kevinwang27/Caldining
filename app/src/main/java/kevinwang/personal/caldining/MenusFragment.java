@@ -1,11 +1,16 @@
 package kevinwang.personal.caldining;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
 
 import MenuFragments.Cafe3Fragment;
 import MenuFragments.ClarkKerrFragment;
@@ -14,27 +19,63 @@ import MenuFragments.FoothillFragment;
 
 public class MenusFragment extends Fragment {
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
     public MenusFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        FragmentTabHost tabHost = new FragmentTabHost(getActivity());
-        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragmentContainer);
+        View v = inflater.inflate(R.layout.fragment_menus, container, false);
+        tabLayout = (TabLayout) v.findViewById(R.id.tabs);
+        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
 
-        tabHost.addTab(tabHost.newTabSpec("Cross roads").setIndicator(
-                "Cross roads"), CrossroadsFragment.class, null);
+        viewPager.setAdapter(new MenusAdapter(getChildFragmentManager()));
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager);
+            }
+        });
 
-        tabHost.addTab(tabHost.newTabSpec("Cafe 3").setIndicator(
-                "Cafe 3"), Cafe3Fragment.class, null);
+        return v;
+    }
 
-        tabHost.addTab(tabHost.newTabSpec("Foothill").setIndicator(
-                "Foothill"), FoothillFragment.class, null);
+    private class MenusAdapter extends FragmentPagerAdapter {
 
-        tabHost.addTab(tabHost.newTabSpec("Clark Kerr").setIndicator(
-                "Clark Kerr"), ClarkKerrFragment.class, null);
+        MenusAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-        return tabHost;
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new CrossroadsFragment();
+                case 1:
+                    return new ClarkKerrFragment();
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            switch (position) {
+                case 0:
+                    return "Crossroads";
+                case 1:
+                    return "Clark Kerr";
+            }
+            return null;
+        }
+
     }
 
 }
