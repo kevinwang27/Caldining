@@ -54,6 +54,10 @@ public class MenusFragment extends Fragment {
                 case 0:
                     return new CrossroadsFragment();
                 case 1:
+                    return new Cafe3Fragment();
+                case 2:
+                    return new FoothillFragment();
+                case 3:
                     return new ClarkKerrFragment();
             }
             return null;
@@ -61,7 +65,7 @@ public class MenusFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 2;
+            return 4;
         }
 
         @Override
@@ -71,6 +75,10 @@ public class MenusFragment extends Fragment {
                 case 0:
                     return "Crossroads";
                 case 1:
+                    return "Cafe 3";
+                case 2:
+                    return "Foothill";
+                case 3:
                     return "Clark Kerr";
             }
             return null;
