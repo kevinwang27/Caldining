@@ -3,6 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="UCBBlue">#4090ff</color>
-    <color name="UCBYellow">#fffb92</color>
+    <color name="UCBBlue">#001b41</color>
+    <color name="UCBYellow">#fffdcf</color>
+    <color name="Black">#000000</color>
+    <color name="White">#FFFFFF</color>
 </resources>

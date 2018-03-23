@@ -13,6 +13,8 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        android:backgroundTint="@color/UCBBlue"
+        app:titleTextColor="@color/White"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat"/>
 
@@ -28,5 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:visibility="visible"
+        android:background="@color/UCBBlue"
+        app:itemIconTint="@color/nav_button"
+        app:itemTextColor="@color/nav_button"
         app:menu="@menu/navigation" />
 </LinearLayout>

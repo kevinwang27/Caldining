@@ -122,6 +122,10 @@ public class DisplayMenuFragment extends Fragment {
                     buildErrorAlert();
                 }
 
+                if (getActivity() == null) {
+                    return;
+                }
+                
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

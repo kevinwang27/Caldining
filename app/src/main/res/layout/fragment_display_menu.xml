@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/UCBBlue"
+    android:background="@color/UCBYellow"
     tools:context="MenuFragments.DisplayMenuFragment">
 
     <ScrollView
@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:orientation="vertical"
-            android:background="@color/UCBBlue">
+            android:background="@color/UCBYellow"
+            android:orientation="vertical">
 
 
             <TextView
@@ -24,10 +24,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/title_breakfast"
-                android:textColor="@android:color/black"
+                android:textColor="@color/White"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:background="@color/UCBYellow" />
+                android:background="@color/UCBBlue" />
 
             <View
                 android:layout_width="match_parent"
@@ -53,10 +53,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/title_lunch"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/White"
                     android:textAlignment="center"
                     android:textSize="20sp"
-                    android:background="@color/UCBYellow" />
+                    android:background="@color/UCBBlue" />
 
                 <View
                     android:layout_width="match_parent"
@@ -83,10 +83,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/title_dinner"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/White"
                     android:textAlignment="center"
                     android:textSize="20sp"
-                    android:background="@color/UCBYellow" />
+                    android:background="@color/UCBBlue" />
 
                 <View
                     android:layout_width="match_parent"
