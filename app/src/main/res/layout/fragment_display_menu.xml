@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/UCBBlue"
     tools:context="MenuFragments.DisplayMenuFragment">
 
     <ScrollView
@@ -14,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/UCBBlue">
 
 
             <TextView
@@ -24,7 +26,8 @@
                 android:text="@string/title_breakfast"
                 android:textColor="@android:color/black"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:background="@color/UCBYellow" />
 
             <View
                 android:layout_width="match_parent"
@@ -52,7 +55,8 @@
                     android:text="@string/title_lunch"
                     android:textColor="@android:color/black"
                     android:textAlignment="center"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:background="@color/UCBYellow" />
 
                 <View
                     android:layout_width="match_parent"
@@ -81,7 +85,8 @@
                     android:text="@string/title_dinner"
                     android:textColor="@android:color/black"
                     android:textAlignment="center"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:background="@color/UCBYellow" />
 
                 <View
                     android:layout_width="match_parent"

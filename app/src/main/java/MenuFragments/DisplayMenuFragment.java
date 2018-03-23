@@ -103,7 +103,6 @@ public class DisplayMenuFragment extends Fragment {
             public void run() {
                 final ArrayList<String> titles = new ArrayList<>();
                 final List<List<String>> stationLists = new ArrayList<>();
-                final List<List<List<String>>> foodListofLists = new ArrayList<>();
                 try {
                     Document document = Jsoup.connect(url).get();
                     Element todayMenus = document.getElementsByClass("menu_wrap_overall").first();
@@ -114,15 +113,9 @@ public class DisplayMenuFragment extends Fragment {
                     Elements menus = todayMenus.getElementsByClass("desc_wrap_ck3");
                     for (int numMenus = 0; numMenus < menus.size(); numMenus++) {
                         stationLists.add(new ArrayList<String>());
-                        foodListofLists.add(new ArrayList<List<String>>());
-                        Elements mealStations = menus.get(numMenus).getElementsByClass("station_wrap");
-                        for (int numStations = 0; numStations < mealStations.size(); numStations++) {
-                            stationLists.get(numMenus).add(mealStations.get(numStations).text());
-                            foodListofLists.get(numMenus).add(new ArrayList<String>());
-                            Elements mealFoods = mealStations.get(numStations).siblingElements();
-                            for (Element food : mealFoods) {
-                                foodListofLists.get(numMenus).get(numStations).add(food.text());
-                            }
+                        Elements mealStations = menus.get(numMenus).select("p.station_wrap, p:not([class])");
+                        for (Element station : mealStations) {
+                            stationLists.get(numMenus).add(station.text());
                         }
                     }
                 } catch (IOException e) {
@@ -134,7 +127,7 @@ public class DisplayMenuFragment extends Fragment {
                     public void run() {
                         setTitles(titles);
                         for (int i = 0; i < stationLists.size(); i++) {
-                            createStations(mContainers[i], stationLists.get(i), foodListofLists.get(i));
+                            createStations(mContainers[i], stationLists.get(i));
                         }
                     }
                 });
@@ -165,29 +158,20 @@ public class DisplayMenuFragment extends Fragment {
         }
     }
 
-    private void createStations(LinearLayout container, List<String> stations, List<List<String>> foodList) {
-        for (int i = 0; i < stations.size(); i++) {
+    private void createStations(LinearLayout container, List<String> stations) {
+        for (String station : stations) {
             LinearLayout menuStation = new LinearLayout(getContext());
             menuStation.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             menuStation.setLayoutParams(params);
 
-            TextView stationTitle = new TextView(getContext());
-            stationTitle.setTextColor(Color.BLACK);
-            stationTitle.setText(stations.get(i));
-            container.addView(stationTitle);
+            TextView stationEntry = new TextView(getContext());
+            stationEntry.setTextColor(Color.BLACK);
+            stationEntry.setText(station);
+            menuStation.addView(stationEntry);
 
-            setFoods(menuStation, foodList.get(i));
-        }
-    }
-
-    private void setFoods(LinearLayout container, List<String> foods) {
-        for (String food : foods) {
-            TextView foodText = new TextView(getContext());
-            foodText.setTextColor(Color.BLACK);
-            foodText.setText(food);
-            container.addView(foodText);
+            container.addView(menuStation);
         }
     }
 
