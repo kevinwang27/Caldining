@@ -5,24 +5,20 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TabHost;
 
-import MenuFragments.Cafe3Fragment;
-import MenuFragments.ClarkKerrFragment;
-import MenuFragments.CrossroadsFragment;
-import MenuFragments.FoothillFragment;
+import MenuFragments.DisplayMenuFragment;
 
 public class MenusFragment extends Fragment {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    public MenusFragment() {}
+    public MenusFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,13 +48,13 @@ public class MenusFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new CrossroadsFragment();
+                    return DisplayMenuFragment.newInstance(Location.CROSSROADS);
                 case 1:
-                    return new Cafe3Fragment();
+                    return DisplayMenuFragment.newInstance(Location.CAFE3);
                 case 2:
-                    return new FoothillFragment();
+                    return DisplayMenuFragment.newInstance(Location.FOOTHILL);
                 case 3:
-                    return new ClarkKerrFragment();
+                    return DisplayMenuFragment.newInstance(Location.CLARKKERR);
             }
             return null;
         }
@@ -86,4 +82,23 @@ public class MenusFragment extends Fragment {
 
     }
 
+    public enum Location {
+        CROSSROADS, CAFE3, FOOTHILL, CLARKKERR;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case CROSSROADS:
+                    return "Crossroads";
+                case CAFE3:
+                    return "Cafe_3";
+                case FOOTHILL:
+                    return "Foothill";
+                case CLARKKERR:
+                    return "Clark_Kerr_Campus";
+                default:
+                    return "Crossroads";
+            }
+        }
+    }
 }
