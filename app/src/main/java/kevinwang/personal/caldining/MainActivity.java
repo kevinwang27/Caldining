@@ -1,25 +1,43 @@
 package kevinwang.personal.caldining;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView mBottomNavigationView;
     private Toolbar toolbar;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        bundle = intent.getBundleExtra("data");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         android.support.v4.app.Fragment fragment = manager.findFragmentByTag("MenusFragment");
         FragmentTransaction transaction = manager.beginTransaction();
         if (fragment == null) {
-            fragment = new MenusFragment();
+            fragment = MenusFragment.newInstance(bundle);
             transaction.replace(R.id.fragmentContainer, fragment, "MenusFragment");
             transaction.commit();
         } else {

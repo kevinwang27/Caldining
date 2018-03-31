@@ -1,11 +1,15 @@
 package MenuFragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -29,18 +33,19 @@ public class DisplayMenuFragment extends Fragment {
     private LinearLayout mMenuContainer;
     private LinearLayout mSecondMenu;
     private LinearLayout mThirdMenu;
-    private LinearLayout[] mContainers;
+    private ArrayList<LinearLayout> mContainers;
     private TextView mFirstTitle;
     private TextView mSecondTitle;
     private TextView mThirdTitle;
 
     public DisplayMenuFragment() {}
 
-    public static DisplayMenuFragment newInstance(MenusFragment.Location location) {
+    public static DisplayMenuFragment newInstance(ArrayList<String> titles, List<List<String>> stations) {
         DisplayMenuFragment displayMenuFragment = new DisplayMenuFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("location", location);
+        args.putSerializable("titles", titles);
+        args.putSerializable("stations", (ArrayList) stations);
         displayMenuFragment.setArguments(args);
 
         return displayMenuFragment;
@@ -50,93 +55,26 @@ public class DisplayMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_display_menu, container, false);
-        mContainers = new LinearLayout[3];
+        mContainers = new ArrayList<>();
         mMenuContainer = v.findViewById(R.id.menu_container);
         mSecondMenu = v.findViewById(R.id.second_menu);
         mThirdMenu = v.findViewById(R.id.third_menu);
-        mContainers[0] = v.findViewById(R.id.first_container);
-        mContainers[1] = v.findViewById(R.id.second_container);
-        mContainers[2] = v.findViewById(R.id.third_container);
+        mContainers.add((LinearLayout) v.findViewById(R.id.first_container));
+        mContainers.add((LinearLayout) v.findViewById(R.id.second_container));
+        mContainers.add((LinearLayout) v.findViewById(R.id.third_container));
         mFirstTitle = v.findViewById(R.id.first_title);
         mSecondTitle = v.findViewById(R.id.second_title);
         mThirdTitle = v.findViewById(R.id.third_title);
 
-        MenusFragment.Location mLocation = (MenusFragment.Location) getArguments().getSerializable("location");
-        String locationAbbr;
-        switch (mLocation) {
-            case CROSSROADS:
-                locationAbbr = "xr";
-                break;
-            case CAFE3:
-                locationAbbr = "c3";
-                break;
-            case FOOTHILL:
-                locationAbbr = "fh";
-                break;
-            case CLARKKERR:
-                locationAbbr = "ckc";
-                break;
-            default:
-                locationAbbr = "xr";
+        ArrayList<String> titles = (ArrayList<String>) getArguments().getSerializable("titles");
+        List<List<String>> stations = (List<List<String>>) getArguments().getSerializable("stations");
+
+        setTitles(titles);
+
+        for (int i = 0; i < mContainers.size(); i++) {
+            createStations(mContainers.get(i), stations.get(i));
         }
-        String url = "https://caldining.berkeley.edu/menu_" + locationAbbr + ".php";
-        scrapeWebsite(url, mLocation);
-
         return v;
-    }
-
-    private void buildErrorAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Unable to connect to Caldining")
-                .setMessage("Please make sure you have internet connection and try again.")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-        builder.create();
-    }
-
-    private void scrapeWebsite(final String url, final MenusFragment.Location mLocation) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final ArrayList<String> titles = new ArrayList<>();
-                final List<List<String>> stationLists = new ArrayList<>();
-                try {
-                    Document document = Jsoup.connect(url).get();
-                    Element todayMenus = document.getElementsByClass("menu_wrap_overall").first();
-                    Elements mealTitles = todayMenus.getElementsByClass("location_period");
-                    for (Element title : mealTitles) {
-                        titles.add(title.text());
-                    }
-                    Elements menus = todayMenus.getElementsByClass("desc_wrap_ck3");
-                    for (int numMenus = 0; numMenus < menus.size(); numMenus++) {
-                        stationLists.add(new ArrayList<String>());
-                        Elements mealStations = menus.get(numMenus).select("p.station_wrap, p:not([class])");
-                        for (Element station : mealStations) {
-                            stationLists.get(numMenus).add(station.text());
-                        }
-                    }
-                } catch (IOException e) {
-                    buildErrorAlert();
-                }
-
-                if (getActivity() == null) {
-                    return;
-                }
-                
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setTitles(titles);
-                        for (int i = 0; i < stationLists.size(); i++) {
-                            createStations(mContainers[i], stationLists.get(i));
-                        }
-                    }
-                });
-            }
-        }).start();
     }
 
     private void setTitles(ArrayList<String> titles) {
@@ -145,11 +83,14 @@ public class DisplayMenuFragment extends Fragment {
                 mFirstTitle.setText(titles.get(0));
                 mMenuContainer.removeView(mSecondMenu);
                 mMenuContainer.removeView(mThirdMenu);
+                mContainers.remove(2);
+                mContainers.remove(1);
                 break;
             case 2:
                 mFirstTitle.setText(titles.get(0));
                 mSecondTitle.setText(titles.get(1));
                 mMenuContainer.removeView(mThirdMenu);
+                mContainers.remove(2);
                 break;
             case 3:
                 mFirstTitle.setText(titles.get(0));
@@ -164,19 +105,66 @@ public class DisplayMenuFragment extends Fragment {
 
     private void createStations(LinearLayout container, List<String> stations) {
         for (String station : stations) {
-            LinearLayout menuStation = new LinearLayout(getContext());
+            final LinearLayout menuStation = new LinearLayout(getContext());
             menuStation.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 5, 0 ,5);
             menuStation.setLayoutParams(params);
 
-            TextView stationEntry = new TextView(getContext());
+            final TextView stationEntry = new TextView(getContext());
             stationEntry.setTextColor(Color.BLACK);
             stationEntry.setText(station);
+            if (isUpperCase(station)) {
+                stationEntry.setTextSize(17);
+                stationEntry.setTypeface(null, Typeface.BOLD);
+                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params1.setMargins(0, 10, 0, 10);
+                stationEntry.setLayoutParams(params1);
+            } else {
+                menuStation.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        buildNotificationAlert(stationEntry.getText().toString());
+                        return true;
+                    }
+                });
+            }
             menuStation.addView(stationEntry);
 
             container.addView(menuStation);
         }
+    }
+
+    private void buildNotificationAlert(final String food) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Set notification for " + food + "?")
+                //create message
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("food", food);
+                        editor.apply();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
+    }
+
+    private boolean isUpperCase(String s) {
+        for (int i=0; i<s.length(); i++) {
+            if (s.charAt(i) != ' ' && !Character.isUpperCase(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

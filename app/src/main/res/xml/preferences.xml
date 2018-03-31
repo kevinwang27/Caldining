@@ -4,13 +4,23 @@
         <ListPreference
             android:entries="@array/plan_entries"
             android:entryValues="@array/plan_values"
-            android:defaultValue="standard"
+            android:defaultValue="Standard"
             android:key="plan"
-            android:title="Change meal plan"
+            android:title="Meal plan"
             android:summary="Standard"/>
+
+        <ListPreference
+            android:entries="@array/location_entries"
+            android:entryValues="@array/location_values"
+            android:defaultValue="Crossroads"
+            android:key="def_location"
+            android:title="Default dining hall"
+            android:summary="Crossroads"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Notifications">
+        <Preference
+            android:title="Manage food watches" />
 
     </PreferenceCategory>
 
