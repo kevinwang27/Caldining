@@ -8,12 +8,4 @@
         android:summary="Standard"
         android:title="Meal plan" />
 
-    <ListPreference
-        android:defaultValue="Crossroads"
-        android:entries="@array/location_entries"
-        android:entryValues="@array/location_values"
-        android:key="def_location"
-        android:summary="Crossroads"
-        android:title="Default dining hall" />
-
 </PreferenceScreen>
