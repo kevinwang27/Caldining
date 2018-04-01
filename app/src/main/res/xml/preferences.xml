@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="General">
-        <ListPreference
-            android:entries="@array/plan_entries"
-            android:entryValues="@array/plan_values"
-            android:defaultValue="Standard"
-            android:key="plan"
-            android:title="Meal plan"
-            android:summary="Standard"/>
+    <ListPreference
+        android:defaultValue="Standard"
+        android:entries="@array/plan_entries"
+        android:entryValues="@array/plan_values"
+        android:key="plan"
+        android:summary="Standard"
+        android:title="Meal plan" />
 
-        <ListPreference
-            android:entries="@array/location_entries"
-            android:entryValues="@array/location_values"
-            android:defaultValue="Crossroads"
-            android:key="def_location"
-            android:title="Default dining hall"
-            android:summary="Crossroads"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Notifications">
-        <Preference
-            android:title="Manage food watches" />
-
-    </PreferenceCategory>
+    <ListPreference
+        android:defaultValue="Crossroads"
+        android:entries="@array/location_entries"
+        android:entryValues="@array/location_values"
+        android:key="def_location"
+        android:summary="Crossroads"
+        android:title="Default dining hall" />
 
 </PreferenceScreen>

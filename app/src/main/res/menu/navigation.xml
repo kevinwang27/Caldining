@@ -11,9 +11,4 @@
         android:icon="@drawable/navigation_points"
         android:title="@string/navigation_points" />
 
-    <item
-        android:id="@+id/navigation_links"
-        android:icon="@drawable/navigation_links"
-        android:title="@string/navigation_links" />
-
 </menu>

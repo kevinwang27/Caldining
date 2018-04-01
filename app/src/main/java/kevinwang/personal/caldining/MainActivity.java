@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_points:
                     startPointsFragment();
                     return true;
-                case R.id.navigation_links:
-                    startLinksFragment();
-                    return true;
             }
             return false;
         }
@@ -72,10 +69,6 @@ public class MainActivity extends AppCompatActivity {
             if (pointsFragment != null) {
                 transaction.hide(pointsFragment);
             }
-            Fragment linksFragment = manager.findFragmentByTag("LinksFragment");
-            if (linksFragment != null) {
-                transaction.hide(linksFragment);
-            }
             transaction.commit();
         }
     }
@@ -93,32 +86,6 @@ public class MainActivity extends AppCompatActivity {
             Fragment menusFragment = manager.findFragmentByTag("MenusFragment");
             if (menusFragment != null) {
                 transaction.hide(menusFragment);
-            }
-            Fragment linksFragment = manager.findFragmentByTag("LinksFragment");
-            if (linksFragment != null) {
-                transaction.hide(linksFragment);
-            }
-            transaction.commit();
-        }
-    }
-
-    private void startLinksFragment() {
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        android.support.v4.app.Fragment fragment = manager.findFragmentByTag("LinksFragment");
-        FragmentTransaction transaction = manager.beginTransaction();
-        if (fragment == null) {
-            fragment = new LinksFragment();
-            transaction.replace(R.id.fragmentContainer, fragment, "LinksFragment");
-            transaction.commit();
-        } else {
-            transaction.show(fragment);
-            Fragment menusFragment = manager.findFragmentByTag("MenusFragment");
-            if (menusFragment != null) {
-                transaction.hide(menusFragment);
-            }
-            Fragment pointsFragment = manager.findFragmentByTag("PointsFragment");
-            if (pointsFragment != null) {
-                transaction.hide(pointsFragment);
             }
             transaction.commit();
         }
