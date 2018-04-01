@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.Window;
 import android.widget.ProgressBar;
 
@@ -17,10 +18,19 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class LoadingActivity extends AppCompatActivity {
+
+    int dayOfYear;
+    int currentYear;
 
     final ArrayList<String> cafe3Titles = new ArrayList<>();
     final List<List<String>> cafe3StationLists = new ArrayList<>();
@@ -31,6 +41,8 @@ public class LoadingActivity extends AppCompatActivity {
     final ArrayList<String> foothillTitles = new ArrayList<>();
     final List<List<String>> foothillStationLists = new ArrayList<>();
 
+    final HashMap<String, Integer> projectedPoints = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -40,15 +52,19 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        scrapeWebsite("https://caldining.berkeley.edu/menu.php");
+        Calendar currentTime = Calendar.getInstance();
+        dayOfYear = currentTime.get(Calendar.DAY_OF_YEAR);
+        currentYear = currentTime.get(Calendar.YEAR);
+
+        scrapeWebsite("https://caldining.berkeley.edu/menu.php", "http://caldining.berkeley.edu/meal-plans/how-it-works/budgeting-your-points");
     }
 
-    private void scrapeWebsite(final String url) {
+    private void scrapeWebsite(final String menuUrl, final String pointsUrl) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Document document = Jsoup.connect(url).get();
+                    Document document = Jsoup.connect(menuUrl).get();
                     Elements locationMenus = document.getElementsByClass("menu_wrap_overall");
                     for (Element locationMenu : locationMenus) {
                         String location = locationMenu.getElementsByClass("location2").first().text().trim();
@@ -92,6 +108,48 @@ public class LoadingActivity extends AppCompatActivity {
                     });
                 }
 
+                try {
+                    Document document = Jsoup.connect(pointsUrl).get();
+                    Elements tables = document.getElementsByTag("table");
+                    Elements rows;
+                    int numDays;
+                    if (dayOfYear >= 212) {
+                        rows = tables.get(0).getElementsByTag("tr");
+                        numDays = rows.size() * 7;
+                    } else {
+                        rows = tables.get(1).getElementsByTag("tr");
+                        numDays = rows.size() * 7;
+                    }
+                    String startDay = rows.get(1).getElementsByTag("td").get(0).text();
+                    int startMonthCal, startDayCal;
+                    if (startDay.toLowerCase().contains("aug")) {
+                        startMonthCal = 7;
+                    } else {
+                        startMonthCal = 0;
+                    }
+                    startDayCal = Integer.valueOf(startDay.replaceAll("[^0-9]", ""));
+
+                    Calendar startDayCalendar = new GregorianCalendar(currentYear, startMonthCal, startDayCal);
+                    int startDayOfYear = startDayCalendar.get(Calendar.DAY_OF_YEAR);
+                    int difference = dayOfYear - startDayOfYear;
+                    Log.d("diff", difference + "");
+                    double multiplicationFactor = 1.0 - (1.0 * difference) / numDays;
+                    projectedPoints.put("Standard", (int) Math.round(1250.0 * multiplicationFactor));
+                    projectedPoints.put("Premium", (int) Math.round(1500.0 * multiplicationFactor));
+                    projectedPoints.put("Blue", (int) Math.round(600.0 * multiplicationFactor));
+                    projectedPoints.put("Gold", (int) Math.round(875.0 * multiplicationFactor));
+                    projectedPoints.put("Platinum", (int) Math.round(1150.0 * multiplicationFactor));
+                    projectedPoints.put("Ultimate", -1);
+
+                } catch (IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            buildErrorAlert();
+                        }
+                    });
+                }
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -116,6 +174,7 @@ public class LoadingActivity extends AppCompatActivity {
         bundle.putSerializable("clarkKerrStationLists", (ArrayList) clarkKerrStationLists);
 
         intent.putExtra("data", bundle);
+        intent.putExtra("projectedPoints", projectedPoints);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

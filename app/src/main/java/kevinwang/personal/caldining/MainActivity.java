@@ -23,6 +23,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavigationView;
     private Toolbar toolbar;
     private Bundle bundle;
+    private HashMap<String, Integer> projectedPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         bundle = intent.getBundleExtra("data");
+        projectedPoints = (HashMap<String, Integer>) intent.getSerializableExtra("projectedPoints");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,9 +60,6 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_menus:
                     startMenusFragment();
-                    return true;
-                case R.id.navigation_hours:
-                    startHoursFragment();
                     return true;
                 case R.id.navigation_points:
                     startPointsFragment();
@@ -83,32 +83,6 @@ public class MainActivity extends AppCompatActivity {
             if (pointsFragment != null) {
                 transaction.hide(pointsFragment);
             }
-            Fragment hoursFragment = manager.findFragmentByTag("HoursFragment");
-            if (hoursFragment != null) {
-                transaction.hide(hoursFragment);
-            }
-            transaction.commit();
-        }
-    }
-
-    private void startHoursFragment() {
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        android.support.v4.app.Fragment fragment = manager.findFragmentByTag("HoursFragment");
-        FragmentTransaction transaction = manager.beginTransaction();
-        if (fragment == null) {
-            fragment = new HoursFragment();
-            transaction.replace(R.id.fragmentContainer, fragment, "HoursFragment");
-            transaction.commit();
-        } else {
-            transaction.show(fragment);
-            Fragment menusFragment = manager.findFragmentByTag("MenusFragment");
-            if (menusFragment != null) {
-                transaction.hide(menusFragment);
-            }
-            Fragment pointsFragment = manager.findFragmentByTag("PointsFragment");
-            if (pointsFragment != null) {
-                transaction.hide(pointsFragment);
-            }
             transaction.commit();
         }
     }
@@ -118,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         android.support.v4.app.Fragment fragment = manager.findFragmentByTag("PointsFragment");
         FragmentTransaction transaction = manager.beginTransaction();
         if (fragment == null) {
-            fragment = new PointsFragment();
+            fragment = PointsFragment.newInstance(projectedPoints);
             transaction.replace(R.id.fragmentContainer, fragment, "PointsFragment");
             transaction.commit();
         } else {
@@ -126,10 +100,6 @@ public class MainActivity extends AppCompatActivity {
             Fragment menusFragment = manager.findFragmentByTag("MenusFragment");
             if (menusFragment != null) {
                 transaction.hide(menusFragment);
-            }
-            Fragment hoursFragment = manager.findFragmentByTag("HoursFragment");
-            if (hoursFragment != null) {
-                transaction.hide(hoursFragment);
             }
             transaction.commit();
         }

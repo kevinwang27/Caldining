@@ -7,11 +7,6 @@
         android:title="@string/navigation_menus" />
 
     <item
-        android:id="@+id/navigation_hours"
-        android:icon="@drawable/navigation_hours"
-        android:title="@string/navigation_hours" />
-
-    <item
         android:id="@+id/navigation_points"
         android:icon="@drawable/navigation_points"
         android:title="@string/navigation_points" />
