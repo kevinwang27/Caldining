@@ -122,14 +122,6 @@ public class DisplayMenuFragment extends Fragment {
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params1.setMargins(0, 10, 0, 10);
                 stationEntry.setLayoutParams(params1);
-            } else {
-                menuStation.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        buildNotificationAlert(stationEntry.getText().toString());
-                        return true;
-                    }
-                });
             }
             menuStation.addView(stationEntry);
 
@@ -137,29 +129,8 @@ public class DisplayMenuFragment extends Fragment {
         }
     }
 
-    private void buildNotificationAlert(final String food) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Set notification for " + food + "?")
-                //create message
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("food", food);
-                        editor.apply();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        dialog.dismiss();
-                    }
-                });
-        builder.show();
-    }
-
     private boolean isUpperCase(String s) {
-        for (int i=0; i<s.length(); i++) {
+        for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) != ' ' && !Character.isUpperCase(s.charAt(i))) {
                 return false;
             }

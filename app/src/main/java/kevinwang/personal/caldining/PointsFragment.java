@@ -16,6 +16,7 @@ public class PointsFragment extends Fragment {
     SharedPreferences sp;
     private HashMap<String, Integer> projectedPoints;
     private TextView pointsText;
+    private TextView mealPlanText;
 
     public PointsFragment() {}
 
@@ -41,11 +42,14 @@ public class PointsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_points, container, false);
 
         pointsText = (TextView) v.findViewById(R.id.points);
+        mealPlanText = (TextView) v.findViewById(R.id.meal_plan);
 
         sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String plan = sp.getString("plan", "Standard");
+        mealPlanText.setText(plan + " Plan");
         if (plan.equals("Ultimate")) {
-            pointsText.setText("!!INFINITE DINING HALL FOOD!!");
+            pointsText.setTextSize(25);
+            pointsText.setText("INFINITE DINING HALL FOOD");
         } else {
             int points = projectedPoints.get(plan);
             pointsText.setText("" + points);
@@ -59,7 +63,9 @@ public class PointsFragment extends Fragment {
         super.onResume();
 
         String plan = sp.getString("plan", "Standard");
+        mealPlanText.setText(plan + " Plan");
         if (plan.equals("Ultimate")) {
+            pointsText.setTextSize(25);
             pointsText.setText("!!INFINITE DINING HALL FOOD!!");
         } else {
             int points = projectedPoints.get(plan);
